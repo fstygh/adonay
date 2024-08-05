@@ -1,0 +1,16 @@
+{
+  "name": "goods-dashboard-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.4"
+  },
+  "author": "",
+  "license": "ISC"
+}
