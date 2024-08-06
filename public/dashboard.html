@@ -1,402 +1,238 @@
-<!DOCTYPE html>
-<html>
+for good index that measn <!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Dashboard</title>
-  <style>
-    body {
-        font-family: 'Montserrat', sans-serif; /* Updated to match the font used in the product cards */
-        background-color: #414852; /* Updated to match the background color of the product cards */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0;
-        padding: 20px;
-    }
-    
-    h1 {
-        margin-bottom: 20px;
-        color: #ddd; /* Updated to match the text color from the product cards */
-        font-family: 'Bebas Neue', sans-serif; /* Updated to match the font used in the product cards */
-        font-size: 2.5rem; /* Updated to match the title font size in the product cards */
-    }
-    
-    nav {
-        width: 100%;
-        max-width: 1200px;
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 20px;
-    }
-    
-    nav button {
-        padding: 10px 15px; /* Updated padding to match the product card buttons */
-        border: none;
-        background-color: #fff; /* Updated to match the button color from the product cards */
-        color: #333; /* Updated to match the button text color from the product cards */
-        border-radius: 4px; /* Updated to match the button border radius from the product cards */
-        cursor: pointer;
-        font-weight: bold; /* Updated to match the button text weight from the product cards */
-        font-size: 12px; /* Updated to match the button font size from the product cards */
-        text-transform: uppercase; /* Updated to match the text transform from the product cards */
-        letter-spacing: 1px; /* Added to match the button text styling from the product cards */
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-    
-    nav button:hover {
-        background-color: orangered; /* Updated to match the hover color from the product cards */
-        color: #fff; /* Updated to match the hover text color from the product cards */
-    }
-    
-    .filter-buttons {
-        margin-bottom: 20px;
-        display: flex;
-        gap: 10px;
-    }
-    
-    .filter-buttons button {
-        padding: 10px 15px; /* Updated padding to match the product card buttons */
-        border: none;
-        background-color: #fff; /* Updated to match the button color from the product cards */
-        color: #333; /* Updated to match the button text color from the product cards */
-        border-radius: 4px; /* Updated to match the button border radius from the product cards */
-        cursor: pointer;
-        font-weight: bold; /* Updated to match the button text weight from the product cards */
-        font-size: 12px; /* Updated to match the button font size from the product cards */
-        text-transform: uppercase; /* Updated to match the text transform from the product cards */
-        letter-spacing: 1px; /* Added to match the button text styling from the product cards */
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-    
-    .filter-buttons button:hover {
-        background-color: orangered; /* Updated to match the hover color from the product cards */
-        color: #fff; /* Updated to match the hover text color from the product cards */
-    }
-    
-    .goods-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: left;
-        gap: 20px;
-        width: 100%;
-        max-width: 1200px;
-        padding: 0 20px;
-    }
-    
-    .goods-item {
-        position: relative;
-        width: 280px;
-        height: 400px;
-        background: #414852; /* Updated to match the background color of the product cards */
-        border-radius: 15px; /* Updated to match the border radius of the product cards */
-        overflow: hidden;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5); /* Updated to match the box shadow of the product cards */
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .goods-item:hover {
-        transform: translateY(-10px); /* Updated to match the hover effect of the product cards */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Updated to match the box shadow of the product cards */
-    }
-    
-    .goods-item img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover; /* Ensure the image covers the area without distortion */
-        transition: transform 0.3s ease; /* Added for zoom effect */
-    }
-    
-    .goods-item:hover img {
-        transform: scale(1.1); /* Added for zoom effect on hover */
-    }
-    
-    .goods-item p {
-        margin: 10px 0;
-        color: #ddd; /* Updated to match the text color of the product cards */
-    }
-    
-    .goods-item .price {
-        font-size: 30px; /* Updated to match the price font size of the product cards */
-        font-weight: bold;
-        color: aqua; /* Updated to match the price color of the product cards */
-    }
-    
-    .goods-item button {
-        margin-top: 10px;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 12px; /* Updated to match the button font size from the product cards */
-        text-transform: uppercase; /* Updated to match the text transform from the product cards */
-        letter-spacing: 1px; /* Added to match the button text styling from the product cards */
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-    
-    .goods-item .edit-btn {
-        background-color: #fff; /* Updated to match the button color from the product cards */
-        color: #333; /* Updated to match the button text color from the product cards */
-    }
-    
-    .goods-item .delete-btn {
-        background-color: #FF0000; /* Updated to match the delete button color from the product cards */
-        color: white;
-    }
-    
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-    
-    .modal-content {
-        background-color: #414852; /* Updated to match the modal background color from the product cards */
-        margin: 10% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 15px; /* Updated to match the border radius of the product cards */
-    }
-    
-    .close {
-        color: #ddd; /* Updated to match the close button color from the product cards */
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-    
-    .close:hover,
-    .close:focus {
-        color: #fff; /* Updated to match the close button hover color from the product cards */
-        text-decoration: none;
-        cursor: pointer;
-    }
-    
-    form label {
-        display: block;
-        margin: 10px 0 5px;
-        color: #ddd; /* Updated to match the label color from the product cards */
-    }
-    
-    form input,
-    form textarea,
-    form select,
-    form button {
-        width: 95%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    
-    form button {
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-    }
-    
-    form button:hover {
-        background-color: #0056b3;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goods Index</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+body {
+    font-family: 'Montserrat', sans-serif; /* Changed from 'Roboto' to match the first page */
+    background-color: #414852; /* Changed to match the background color of the first page */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+h1 {
+    margin: 20px 0;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #ddd; /* Changed to match the text color of the first page */
+    font-family: 'Bebas Neue', sans-serif; /* Changed to match the font of the title on the first page */
+}
+
+.filter-buttons {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.filter-buttons button {
+    padding: 10px 15px; /* Adjusted to match the button size on the first page */
+    border: none;
+    border-radius: 4px; /* Adjusted to match the button style on the first page */
+    background-color: #fff; /* Changed to match the button color on the first page */
+    color: #333; /* Changed to match the button text color on the first page */
+    font-weight: bold; /* Changed to match the button text weight on the first page */
+    font-size: 12px; /* Adjusted to match the font size on the first page */
+    text-transform: uppercase; /* Changed to match the text transform style on the first page */
+    letter-spacing: 1px; /* Added to match the button text styling on the first page */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-buttons button:hover {
+    background-color: orangered; /* Changed to match the hover color on the first page */
+    color: #fff; /* Changed to match the hover text color on the first page */
+}
+
+.goods-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+.goods-item {
+    position: relative;
+    width: 280px;
+    height: 400px;
+    background: #414852; /* Changed to match the background color of the first page */
+    border-radius: 15px; /* Changed to match the border radius on the first page */
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5); /* Changed to match the box shadow on the first page */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.goods-item:hover {
+    transform: translateY(-10px); /* Changed to match the hover effect on the first page */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Changed to match the box shadow on the first page */
+}
+
+.goods-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+    transition: transform 0.3s ease; /* Added for the zoom effect */
+}
+
+.goods-item:hover img {
+    transform: scale(1.1); /* Added for zoom effect on hover */
+}
+
+.goods-item-content {
+    padding: 10px;
+    text-align: center;
+    color: #ddd; /* Changed to match the text color on the first page */
+}
+
+.goods-item .price {
+    margin: 15px 0 10px;
+    font-size: 30px; /* Changed to match the price font size on the first page */
+    font-weight: bold;
+    color: aqua; /* Changed to match the price color on the first page */
+}
+
+.goods-item .description {
+    font-style: italic;
+    color: #777; /* Changed to match the description color on the first page */
+}
+
+    </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <nav>
-    <button id="openModalBtn">+</button>
-  </nav>
-
-  <div class="filter-buttons">
-    <button onclick="filterGoods('all')">All</button>
-    <button onclick="filterGoods('electronics')">Electronics</button>
-    <button onclick="filterGoods('kitchen')">Kitchen Utensils</button>
-    <button onclick="filterGoods('salon')">Salon Details</button>
-  </div>
-
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Post Goods</h2>
-
-      <form id="postGoodsForm">
-        <label for="goodsImageURL">Image (URL):</label>
-        <input type="url" id="goodsImageURL" name="goodsImageURL" placeholder="http://example.com/image.jpg"><br><br>
-
-        <label for="goodsPrice">Price:</label>
-        <input type="number" id="goodsPrice" name="goodsPrice" required>
-
-        <label for="goodsDescription">Description:</label>
-        <textarea id="goodsDescription" name="goodsDescription" required></textarea>
-
-        <label for="goodsCategory">Category:</label>
-        <select id="goodsCategory" name="goodsCategory" required>
-          <option value="electronics">Electronics</option>
-          <option value="kitchen">Kitchen Utensils</option>
-          <option value="salon">Salon Details</option>
-        </select>
-
-        <button type="submit">Post</button>
-      </form>
+    <h1>Goods Index</h1>
+    <div class="filter-buttons">
+        <button onclick="filterGoods('all')">All</button>
+        <button onclick="filterGoods('electronics')">Electronics</button>
+        <button onclick="filterGoods('kitchen')">Kitchen Utensils</button>
+        <button onclick="filterGoods('salon')">Salon Details</button>
     </div>
-  </div>
+    <div class="goods-container" id="goodsContainer"></div>
 
-  <div id="goodsContainer" class="goods-container">
-    <!-- Goods items will be dynamically added here -->
-  </div>
+    <script>
+        function loadGoods(filter = 'all') {
+            var goodsContainer = document.getElementById('goodsContainer');
+            goodsContainer.innerHTML = '';
 
-  <script>
-    // Get modal element
-    var modal = document.getElementById("myModal");
+            var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [
+                {
+                    image: 'https://via.placeholder.com/300',
+                    price: '100.00',
+                    description: 'The great person I have ever seen in my life',
+                    contact: 'example@example.com',
+                    category: 'electronics'
+                },
+                {
+                    image: 'https://via.placeholder.com/300',
+                    price: '200.00',
+                    description: 'An exceptional product for your home',
+                    contact: 'contact@sample.com',
+                    category: 'kitchen'
+                },
+                {
+                    image: 'https://via.placeholder.com/300',
+                    price: '150.00',
+                    description: 'Top quality salon equipment',
+                    contact: 'info@salon.com',
+                    category: 'salon'
+                }
+            ];
 
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
+            goodsList.forEach(function(goods) {
+                if (filter === 'all' || goods.category === filter) {
+                    var goodsItem = document.createElement('div');
+                    goodsItem.className = 'goods-item';
 
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-      modal.style.display = "none";
-    }
+                    var img = document.createElement('img');
+                    img.src = goods.image;
+                    goodsItem.appendChild(img);
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
+                    var content = document.createElement('div');
+                    content.className = 'goods-item-content';
 
-    // Handle form submission
-    document.getElementById("postGoodsForm").onsubmit = function(event) {
-      event.preventDefault();
-      var goodsImageURL = document.getElementById("goodsImageURL").value;
-      var goodsPrice = document.getElementById("goodsPrice").value;
-      var goodsDescription = document.getElementById("goodsDescription").value;
-      var goodsCategory = document.getElementById("goodsCategory").value;
-      var contactInfo = "Contact: example@example.com"; // Fixed contact information
+                    var price = document.createElement('p');
+                    price.textContent = 'Price: $' + goods.price;
+                    price.className = 'price';
+                    content.appendChild(price);
 
-      // Create a new goods object
-      var goods = {
-        image: goodsImageURL,
-        price: goodsPrice,
-        description: goodsDescription,
-        category: goodsCategory,
-        contact: contactInfo
-      };
+                    var description = document.createElement('p');
+                    description.textContent = 'Description: ' + goods.description;
+                    description.className = 'description';
+                    content.appendChild(description);
 
-      // Add the new goods object to the goods list
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      goodsList.push(goods);
-      localStorage.setItem('goodsList', JSON.stringify(goodsList));
+                    var contact = document.createElement('p');
+                    contact.textContent = 'Contact: ' + goods.contact;
+                    contact.className = 'contact';
+                    content.appendChild(contact);
 
-      // Close the modal after submission
-      modal.style.display = "none";
-
-      // Clear the form inputs
-      document.getElementById("postGoodsForm").reset();
-
-      // Reload the goods list
-      loadGoods();
-    };
-
-    // Function to load goods from localStorage and display them
-    function loadGoods(filter = 'all') {
-      var goodsContainer = document.getElementById('goodsContainer');
-      goodsContainer.innerHTML = ''; // Clear the container
-
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      goodsList.forEach(function(goods) {
-        if (filter === 'all' || goods.category === filter) {
-          var goodsItem = document.createElement('div');
-          goodsItem.className = 'goods-item';
-
-          var img = document.createElement('img');
-          img.src = goods.image;
-          goodsItem.appendChild(img);
-
-          var price = document.createElement('p');
-          price.textContent = 'Price: $' + goods.price;
-          goodsItem.appendChild(price);
-
-          var description = document.createElement('p');
-          description.textContent = 'Description: ' + goods.description;
-          goodsItem.appendChild(description);
-
-          var contact = document.createElement('p');
-          contact.textContent = goods.contact;
-          goodsItem.appendChild(contact);
-
-          var editBtn = document.createElement('button');
-          editBtn.className = 'edit-btn';
-          editBtn.textContent = 'Edit';
-          editBtn.onclick = function() {
-            editGoods(goodsList.indexOf(goods));
-          };
-          goodsItem.appendChild(editBtn);
-
-          var deleteBtn = document.createElement('button');
-          deleteBtn.className = 'delete-btn';
-          deleteBtn.textContent = 'Delete';
-          deleteBtn.onclick = function() {
-            deleteGoods(goodsList.indexOf(goods));
-          };
-          goodsItem.appendChild(deleteBtn);
-
-          goodsContainer.appendChild(goodsItem);
+                    goodsItem.appendChild(content);
+                    goodsContainer.appendChild(goodsItem);
+                }
+            });
         }
-      });
+
+        function filterGoods(category) {
+            loadGoods(category);
+        }
+
+        window.onload = function() {
+            loadGoods();
+        };
+        // Handle form submission
+document.getElementById("postGoodsForm").onsubmit = function(event) {
+    event.preventDefault();
+
+    var goodsImage = document.getElementById("goodsImage").files[0];
+    var goodsImageUrl = document.getElementById("goodsImageUrl").value;
+    var goodsPrice = document.getElementById("goodsPrice").value;
+    var goodsDescription = document.getElementById("goodsDescription").value;
+    var goodsCategory = document.getElementById("goodsCategory").value;
+    var contactInfo = "Contact: example@example.com"; // Fixed contact information
+
+    var imageSrc;
+
+    if (goodsImage) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            imageSrc = e.target.result;
+            saveGoods(imageSrc);
+        };
+        reader.readAsDataURL(goodsImage);
+    } else if (goodsImageUrl) {
+        imageSrc = goodsImageUrl;
+        saveGoods(imageSrc);
+    } else {
+        alert("Please provide an image.");
     }
 
-    // Function to filter goods by category
-    function filterGoods(category) {
-      loadGoods(category);
+    function saveGoods(imageSrc) {
+        var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+        goodsList.push({
+            image: imageSrc,
+            price: goodsPrice,
+            description: goodsDescription,
+            category: goodsCategory,
+            contact: contactInfo
+        });
+        localStorage.setItem('goodsList', JSON.stringify(goodsList));
+
+        // Close the modal after submission
+        modal.style.display = "none";
+        loadGoods();
+
+        // Clear the form fields
+        document.getElementById("postGoodsForm").reset();
     }
-
-    // Function to delete goods
-    function deleteGoods(index) {
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      goodsList.splice(index, 1);
-      localStorage.setItem('goodsList', JSON.stringify(goodsList));
-      loadGoods();
-    }
-
-    // Function to edit goods
-    function editGoods(index) {
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      var goods = goodsList[index];
-
-      document.getElementById("goodsImageURL").value = goods.image;
-      document.getElementById("goodsPrice").value = goods.price;
-      document.getElementById("goodsDescription").value = goods.description;
-      document.getElementById("goodsCategory").value = goods.category;
-
-      // Remove the old item and open the modal for editing
-      goodsList.splice(index, 1);
-      localStorage.setItem('goodsList', JSON.stringify(goodsList));
-      modal.style.display = "block";
-    }
-
-    // Open the modal when the user clicks the "+" button
-    document.getElementById("openModalBtn").onclick = function() {
-      modal.style.display = "block";
-    }
-
-    // Load the goods list when the page loads
-    window.onload = function() {
-      loadGoods();
-    };
-  </script>
+};
+    </script>
 </body>
 </html>
