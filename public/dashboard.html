@@ -397,6 +397,43 @@
     window.onload = function() {
       loadGoods();
     };
+
+ function loadGoods() {
+      fetch('/get-goods')
+        .then(response => response.json())
+        .then(goodsList => {
+          var goodsContainer = document.getElementById('goodsContainer');
+          goodsContainer.innerHTML = '';
+
+          goodsList.forEach(goods => {
+            var goodsItem = document.createElement('div');
+            goodsItem.className = 'goods-item';
+
+            var img = document.createElement('img');
+            img.src = goods.image;
+            goodsItem.appendChild(img);
+
+            var price = document.createElement('p');
+            price.textContent = 'Price: $' + goods.price;
+            goodsItem.appendChild(price);
+
+            var description = document.createElement('p');
+            description.textContent = 'Description: ' + goods.description;
+            goodsItem.appendChild(description);
+
+            var contact = document.createElement('p');
+            contact.textContent = goods.contact;
+            goodsItem.appendChild(contact);
+
+            goodsContainer.appendChild(goodsItem);
+          });
+        });
+    }
+
+    window.onload = function() {
+      loadGoods();
+    };
+    
   </script>
 </body>
 </html>
