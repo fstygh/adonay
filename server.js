@@ -2,25 +2,38 @@ const express = require('express');
 const session = require('express-session');
 const multer = require('multer');
 const path = require('path');
-const cors = require('cors');
+const mongoose = require('mongoose');
+const Goods = require('./models/goods');
 
 const app = express();
-const PORT = 5050;
+const PORT = 4000;
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// MongoDB connection
+const mongoURI = 'mongodb://localhost:27017/mydatabase';
+mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+mongoose.connection.on('connected', () => {
+    console.log('Connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+    console.error('MongoDB connection error:', err);
+});
+
 // Middleware to parse JSON and urlencoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS setup
-app.use(cors());
-
 // Session middleware setup
 app.use(session({
-    secret: 'your-secret-key', // Change this to a secure key
+    secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true
 }));
@@ -37,34 +50,44 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Handle form submission
-app.post('/submit-form', upload.single('goodsImage'), (req, res) => {
+// Get goods
+app.get('/get-goods', async (req, res) => {
+    try {
+        const goodsList = await Goods.find({});
+        res.json(goodsList);
+    } catch (error) {
+        res.status(500).send("Error retrieving goods: " + error.message);
+    }
+});
+
+// Update goods
+app.put('/update-goods/:id', upload.single('goodsImage'), async (req, res) => {
+    const { id } = req.params;
     const { goodsImageUrl, goodsPrice, goodsDescription, goodsCategory } = req.body;
     const goodsImage = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : goodsImageUrl;
-    const contactInfo = "Contact: example@example.com"; // Fixed contact information
+    const contactInfo = "Contact: example@example.com";
 
     if (!goodsImage) {
         return res.status(400).send("Please provide an image.");
     }
 
-    const goods = {
-        image: goodsImage,
-        price: goodsPrice,
-        description: goodsDescription,
-        category: goodsCategory,
-        contact: contactInfo
-    };
+    try {
+        const updatedGoods = await Goods.findByIdAndUpdate(id, {
+            image: goodsImage,
+            price: goodsPrice,
+            description: goodsDescription,
+            category: goodsCategory,
+            contact: contactInfo
+        }, { new: true });
 
-    let goodsList = req.session.goodsList || [];
-    goodsList.push(goods);
-    req.session.goodsList = goodsList;
+        if (!updatedGoods) {
+            return res.status(404).send("Goods not found.");
+        }
 
-    res.redirect('/');
-});
-
-// Get goods list (for frontend fetching)
-app.get('/api/goods', (req, res) => {
-    res.json(req.session.goodsList || []);
+        res.json(updatedGoods);
+    } catch (error) {
+        res.status(500).send("Error updating goods: " + error.message);
+    }
 });
 
 // Start the server
