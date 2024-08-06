@@ -287,50 +287,6 @@
       }
     }
 
-    // Handle form submission
-    document.getElementById("postGoodsForm").onsubmit = function(event) {
-      event.preventDefault();
-      var goodsImageURL = document.getElementById("goodsImageURL").value;
-      var goodsPrice = document.getElementById("goodsPrice").value;
-      var goodsDescription = document.getElementById("goodsDescription").value;
-      var goodsCategory = document.getElementById("goodsCategory").value;
-      var contactInfo = "Contact: example@example.com"; // Fixed contact information
-
-      // Create a new goods object
-      var goods = {
-        image: goodsImageURL,
-        price: goodsPrice,
-        description: goodsDescription,
-        category: goodsCategory,
-        contact: contactInfo
-      };
-
-      // Send the goods object to the server
-      fetch('http://localhost:5050/submit-form', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(goods)
-      })
-      .then(response => response.text())
-      .then(() => {
-        // Close the modal after submission
-        modal.style.display = "none";
-
-        // Clear the form inputs
-        document.getElementById("postGoodsForm").reset();
-
-        // Reload the goods list
-        loadGoods();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    };
-
-
-
 
 // Handle form submission
 document.getElementById("postGoodsForm").onsubmit = function(event) {
