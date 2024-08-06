@@ -264,49 +264,6 @@
 
 
 
-// Handle form submission
-document.getElementById("postGoodsForm").onsubmit = function(event) {
-    event.preventDefault(); // Prevent the default form submission
-
-    var formData = new FormData();
-    var goodsImage = document.getElementById("goodsImage").files[0];
-    var goodsImageUrl = document.getElementById("goodsImageUrl").value;
-    var goodsPrice = document.getElementById("goodsPrice").value;
-    var goodsDescription = document.getElementById("goodsDescription").value;
-    var goodsCategory = document.getElementById("goodsCategory").value;
-    
-    // Check if an image file is selected
-    if (goodsImage) {
-        formData.append('goodsImage', goodsImage);
-    } else if (goodsImageUrl) {
-        formData.append('goodsImageUrl', goodsImageUrl);
-    } else {
-        alert("Please provide an image.");
-        return;
-    }
-
-    formData.append('goodsPrice', goodsPrice);
-    formData.append('goodsDescription', goodsDescription);
-    formData.append('goodsCategory', goodsCategory);
-
-    fetch('http://localhost:5050/submit-form', { // Replace with your server URL
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(result => {
-        console.log('Success:', result);
-        loadGoods(); // Reload goods after successful submission
-        document.getElementById("postGoodsForm").reset(); // Clear the form
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-};
-
-
-
-    
             // Check if the user is authenticated
         if (sessionStorage.getItem('authenticated') !== 'true') {
             // If not authenticated, redirect to login page
@@ -372,6 +329,53 @@ document.getElementById("postGoodsForm").onsubmit = function(event) {
       });
     };
 
+
+
+
+// Handle form submission
+document.getElementById("postGoodsForm").onsubmit = function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    var formData = new FormData();
+    var goodsImage = document.getElementById("goodsImage").files[0];
+    var goodsImageUrl = document.getElementById("goodsImageUrl").value;
+    var goodsPrice = document.getElementById("goodsPrice").value;
+    var goodsDescription = document.getElementById("goodsDescription").value;
+    var goodsCategory = document.getElementById("goodsCategory").value;
+    
+    // Check if an image file is selected
+    if (goodsImage) {
+        formData.append('goodsImage', goodsImage);
+    } else if (goodsImageUrl) {
+        formData.append('goodsImageUrl', goodsImageUrl);
+    } else {
+        alert("Please provide an image.");
+        return;
+    }
+
+    formData.append('goodsPrice', goodsPrice);
+    formData.append('goodsDescription', goodsDescription);
+    formData.append('goodsCategory', goodsCategory);
+
+    fetch('http://localhost:5050/submit-form', { // Replace with your server URL
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        console.log('Success:', result);
+        loadGoods(); // Reload goods after successful submission
+        document.getElementById("postGoodsForm").reset(); // Clear the form
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+};
+
+
+
+    
+    
     // Function to load goods from the server and display them
     function loadGoods(filter = 'all') {
       var goodsContainer = document.getElementById('goodsContainer');
