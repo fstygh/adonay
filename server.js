@@ -3,7 +3,6 @@ const session = require('express-session');
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
-app.use(cors());
 
 const app = express();
 const PORT = 5050;
@@ -15,6 +14,9 @@ const upload = multer({ storage: storage });
 // Middleware to parse JSON and urlencoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// CORS setup
+app.use(cors());
 
 // Session middleware setup
 app.use(session({
@@ -60,63 +62,12 @@ app.post('/submit-form', upload.single('goodsImage'), (req, res) => {
     res.redirect('/');
 });
 
+// Get goods list (for frontend fetching)
+app.get('/api/goods', (req, res) => {
+    res.json(req.session.goodsList || []);
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-function loadGoods(filter = 'all') {
-    var goodsContainer = document.getElementById('goodsContainer');
-    goodsContainer.innerHTML = ''; // Clear the container
-  
-    // Make a GET request to the backend server to retrieve the goodsList
-    fetch('https://your-backend-server.com/api/goods')
-      .then(response => response.json())
-      .then(data => {
-        var goodsList = data;
-  
-        goodsList.forEach(function(goods, index) {
-          if (filter === 'all' || goods.category === filter) {
-            var goodsItem = document.createElement('div');
-            goodsItem.className = 'goods-item';
-  
-            var img = document.createElement('img');
-            img.src = goods.image;
-            goodsItem.appendChild(img);
-  
-            var price = document.createElement('p');
-            price.textContent = 'Price: $' + goods.price;
-            goodsItem.appendChild(price);
-  
-            var description = document.createElement('p');
-            description.textContent = 'Description: ' + goods.description;
-            goodsItem.appendChild(description);
-  
-            var contact = document.createElement('p');
-            contact.textContent = goods.contact;
-            goodsItem.appendChild(contact);
-  
-            var editBtn = document.createElement('button');
-            editBtn.className = 'edit-btn';
-            editBtn.textContent = 'Edit';
-            editBtn.onclick = function() {
-              editGoods(index);
-            };
-            goodsItem.appendChild(editBtn);
-  
-            var deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.textContent = 'Delete';
-            deleteBtn.onclick = function() {
-              deleteGoods(index);
-            };
-            goodsItem.appendChild(deleteBtn);
-  
-            goodsContainer.appendChild(goodsItem);
-          }
-        });
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }
-  
