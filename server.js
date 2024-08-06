@@ -1,19 +1,12 @@
 const express = require('express');
-const session = require('express-session');
-const multer = require('multer');
-const path = require('path');
 const mongoose = require('mongoose');
 const Goods = require('./models/goods');
 
 const app = express();
 const PORT = 4000;
 
-// Configure multer for file uploads
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
 // MongoDB connection
-const mongoURI = 'mongodb://localhost:27017/mydatabase';
+const mongoURI = 'mongodb://localhost:27017/goods'; // Change 'goods' to your database name if needed
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -31,23 +24,16 @@ mongoose.connection.on('error', (err) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session middleware setup
-app.use(session({
-    secret: 'your-secret-key',
-    resave: false,
-    saveUninitialized: true
-}));
-
 // Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 // Define routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+    res.sendFile(__dirname + '/public/dashboard.html');
 });
 
 // Get goods
@@ -60,37 +46,27 @@ app.get('/get-goods', async (req, res) => {
     }
 });
 
-// Update goods
-app.put('/update-goods/:id', upload.single('goodsImage'), async (req, res) => {
-    const { id } = req.params;
+// Post goods
+app.post('/post-goods', async (req, res) => {
     const { goodsImageUrl, goodsPrice, goodsDescription, goodsCategory } = req.body;
-    const goodsImage = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : goodsImageUrl;
     const contactInfo = "Contact: example@example.com";
 
-    if (!goodsImage) {
-        return res.status(400).send("Please provide an image.");
-    }
+    const newGoods = new Goods({
+        image: goodsImageUrl,
+        price: goodsPrice,
+        description: goodsDescription,
+        category: goodsCategory,
+        contact: contactInfo
+    });
 
     try {
-        const updatedGoods = await Goods.findByIdAndUpdate(id, {
-            image: goodsImage,
-            price: goodsPrice,
-            description: goodsDescription,
-            category: goodsCategory,
-            contact: contactInfo
-        }, { new: true });
-
-        if (!updatedGoods) {
-            return res.status(404).send("Goods not found.");
-        }
-
-        res.json(updatedGoods);
+        const savedGoods = await newGoods.save();
+        res.json(savedGoods);
     } catch (error) {
-        res.status(500).send("Error updating goods: " + error.message);
+        res.status(500).send("Error saving goods: " + error.message);
     }
 });
 
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
