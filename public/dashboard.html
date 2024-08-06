@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Dashboard</title>
   <style>
- body {
+    body {
         font-family: 'Montserrat', sans-serif; /* Updated to match the font used in the product cards */
         background-color: #414852; /* Updated to match the background color of the product cards */
         display: flex;
@@ -259,16 +260,6 @@
   </div>
 
   <script>
-
-
-
-
-
-            // Check if the user is authenticated
-        if (sessionStorage.getItem('authenticated') !== 'true') {
-            // If not authenticated, redirect to login page
-            window.location.href = 'login.html';
-        }
     // Get modal element
     var modal = document.getElementById("myModal");
 
@@ -287,106 +278,85 @@
       }
     }
 
+    // Handle form submission
+    document.getElementById("postGoodsForm").onsubmit = function(event) {
+      event.preventDefault();
+      var goodsImageURL = document.getElementById("goodsImageURL").value;
+      var goodsPrice = document.getElementById("goodsPrice").value;
+      var goodsDescription = document.getElementById("goodsDescription").value;
+      var goodsCategory = document.getElementById("goodsCategory").value;
+      var contactInfo = "Contact: example@example.com"; // Fixed contact information
 
-// Handle form submission
-document.getElementById("postGoodsForm").onsubmit = function(event) {
-    event.preventDefault(); // Prevent the default form submission
+      // Create a new goods object
+      var goods = {
+        image: goodsImageURL,
+        price: goodsPrice,
+        description: goodsDescription,
+        category: goodsCategory,
+        contact: contactInfo
+      };
 
-    var formData = new FormData();
-    var goodsImage = document.getElementById("goodsImage").files[0];
-    var goodsImageUrl = document.getElementById("goodsImageUrl").value;
-    var goodsPrice = document.getElementById("goodsPrice").value;
-    var goodsDescription = document.getElementById("goodsDescription").value;
-    var goodsCategory = document.getElementById("goodsCategory").value;
-    
-    // Check if an image file is selected
-    if (goodsImage) {
-        formData.append('goodsImage', goodsImage);
-    } else if (goodsImageUrl) {
-        formData.append('goodsImageUrl', goodsImageUrl);
-    } else {
-        alert("Please provide an image.");
-        return;
-    }
+      // Add the new goods object to the goods list
+      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+      goodsList.push(goods);
+      localStorage.setItem('goodsList', JSON.stringify(goodsList));
 
-    formData.append('goodsPrice', goodsPrice);
-    formData.append('goodsDescription', goodsDescription);
-    formData.append('goodsCategory', goodsCategory);
+      // Close the modal after submission
+      modal.style.display = "none";
 
-    fetch('http://localhost:5050/submit-form', { // Replace with your server URL
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(result => {
-        console.log('Success:', result);
-        loadGoods(); // Reload goods after successful submission
-        document.getElementById("postGoodsForm").reset(); // Clear the form
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-};
+      // Clear the form inputs
+      document.getElementById("postGoodsForm").reset();
 
+      // Reload the goods list
+      loadGoods();
+    };
 
-
-    
-    
-    // Function to load goods from the server and display them
+    // Function to load goods from localStorage and display them
     function loadGoods(filter = 'all') {
       var goodsContainer = document.getElementById('goodsContainer');
       goodsContainer.innerHTML = ''; // Clear the container
 
-      // Make a GET request to the backend server to retrieve the goodsList
-      fetch('http://localhost:5050/api/goods')
-        .then(response => response.json())
-        .then(data => {
-          var goodsList = data;
+      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+      goodsList.forEach(function(goods) {
+        if (filter === 'all' || goods.category === filter) {
+          var goodsItem = document.createElement('div');
+          goodsItem.className = 'goods-item';
 
-          goodsList.forEach(function(goods, index) {
-            if (filter === 'all' || goods.category === filter) {
-              var goodsItem = document.createElement('div');
-              goodsItem.className = 'goods-item';
+          var img = document.createElement('img');
+          img.src = goods.image;
+          goodsItem.appendChild(img);
 
-              var img = document.createElement('img');
-              img.src = goods.image;
-              goodsItem.appendChild(img);
+          var price = document.createElement('p');
+          price.textContent = 'Price: $' + goods.price;
+          goodsItem.appendChild(price);
 
-              var price = document.createElement('p');
-              price.textContent = 'Price: $' + goods.price;
-              goodsItem.appendChild(price);
+          var description = document.createElement('p');
+          description.textContent = 'Description: ' + goods.description;
+          goodsItem.appendChild(description);
 
-              var description = document.createElement('p');
-              description.textContent = 'Description: ' + goods.description;
-              goodsItem.appendChild(description);
+          var contact = document.createElement('p');
+          contact.textContent = goods.contact;
+          goodsItem.appendChild(contact);
 
-              var contact = document.createElement('p');
-              contact.textContent = goods.contact;
-              goodsItem.appendChild(contact);
+          var editBtn = document.createElement('button');
+          editBtn.className = 'edit-btn';
+          editBtn.textContent = 'Edit';
+          editBtn.onclick = function() {
+            editGoods(goodsList.indexOf(goods));
+          };
+          goodsItem.appendChild(editBtn);
 
-              var editBtn = document.createElement('button');
-              editBtn.className = 'edit-btn';
-              editBtn.textContent = 'Edit';
-              editBtn.onclick = function() {
-                editGoods(index);
-              };
-              goodsItem.appendChild(editBtn);
+          var deleteBtn = document.createElement('button');
+          deleteBtn.className = 'delete-btn';
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.onclick = function() {
+            deleteGoods(goodsList.indexOf(goods));
+          };
+          goodsItem.appendChild(deleteBtn);
 
-              var deleteBtn = document.createElement('button');
-              deleteBtn.className = 'delete-btn';
-              deleteBtn.textContent = 'Delete';
-              deleteBtn.onclick = function() {
-                deleteGoods(index);
-              };
-              goodsItem.appendChild(deleteBtn);
-
-              goodsContainer.appendChild(goodsItem);
-            }
-          });
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+          goodsContainer.appendChild(goodsItem);
+        }
+      });
     }
 
     // Function to filter goods by category
@@ -407,29 +377,23 @@ document.getElementById("postGoodsForm").onsubmit = function(event) {
       var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
       var goods = goodsList[index];
 
-      document.getElementById('goodsImageURL').value = goods.image;
-      document.getElementById('goodsPrice').value = goods.price;
-      document.getElementById('goodsDescription').value = goods.description;
-      document.getElementById('goodsCategory').value = goods.category;
+      document.getElementById("goodsImageURL").value = goods.image;
+      document.getElementById("goodsPrice").value = goods.price;
+      document.getElementById("goodsDescription").value = goods.description;
+      document.getElementById("goodsCategory").value = goods.category;
 
-      // Update the goodsList after editing
-      document.getElementById('postGoodsForm').onsubmit = function(event) {
-        event.preventDefault();
-
-        goods.image = document.getElementById('goodsImageURL').value;
-        goods.price = document.getElementById('goodsPrice').value;
-        goods.description = document.getElementById('goodsDescription').value;
-        goods.category = document.getElementById('goodsCategory').value;
-
-        goodsList[index] = goods;
-        localStorage.setItem('goodsList', JSON.stringify(goodsList));
-
-        // Reload the goods list
-        loadGoods();
-      };
+      // Remove the old item and open the modal for editing
+      goodsList.splice(index, 1);
+      localStorage.setItem('goodsList', JSON.stringify(goodsList));
+      modal.style.display = "block";
     }
 
-    // Load goods when the page loads
+    // Open the modal when the user clicks the "+" button
+    document.getElementById("openModalBtn").onclick = function() {
+      modal.style.display = "block";
+    }
+
+    // Load the goods list when the page loads
     window.onload = function() {
       loadGoods();
     };
