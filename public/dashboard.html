@@ -259,6 +259,11 @@
   </div>
 
   <script>
+            // Check if the user is authenticated
+        if (sessionStorage.getItem('authenticated') !== 'true') {
+            // If not authenticated, redirect to login page
+            window.location.href = 'login.html';
+        }
     // Get modal element
     var modal = document.getElementById("myModal");
 
