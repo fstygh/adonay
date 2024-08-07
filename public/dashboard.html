@@ -260,179 +260,94 @@
   </div>
 
   <script>
-    // Get modal element
-    var modal = document.getElementById("myModal");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
+  // Get modal element
+  var modal = document.getElementById("myModal");
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
       modal.style.display = "none";
     }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+  }
+  // Handle form submission
+  document.getElementById("postGoodsForm").onsubmit = function(event) {
+    event.preventDefault();
+    var goodsImageURL = document.getElementById("goodsImageURL").value;
+    var goodsPrice = document.getElementById("goodsPrice").value;
+    var goodsDescription = document.getElementById("goodsDescription").value;
+    var goodsCategory = document.getElementById("goodsCategory").value;
+    var contactInfo = "Contact: example@example.com"; // Fixed contact information
+    // Create a new goods object
+    var goods = {
+      image: goodsImageURL,
+      price: goodsPrice,
+      description: goodsDescription,
+      category: goodsCategory,
+      contact: contactInfo
+    };
+    // Add the new goods object to the goods list
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    goodsList.push(goods);
+    localStorage.setItem('goodsList', JSON.stringify(goodsList));
+    // Close the modal after submission
+    modal.style.display = "none";
+    // Clear the form inputs
+    document.getElementById("postGoodsForm").reset();
+    // Reload the goods list
+    loadGoods();
+  };
+  // Function to load goods from localStorage and display them
+  function loadGoods(filter = 'all') {
+    var goodsContainer = document.getElementById('goodsContainer');
+    goodsContainer.innerHTML = ''; // Clear the container
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    goodsList.forEach(function(goods) {
+      if (filter === 'all' || goods.category === filter) {
+        var goodsItem = document.createElement('div');
+        goodsItem.className = 'goods-item';
+        // Add the goods details to the goods item
+        // ...
+        goodsContainer.appendChild(goodsItem);
       }
-    }
-
-    // Handle form submission
-    document.getElementById("postGoodsForm").onsubmit = function(event) {
-      event.preventDefault();
-      var goodsImageURL = document.getElementById("goodsImageURL").value;
-      var goodsPrice = document.getElementById("goodsPrice").value;
-      var goodsDescription = document.getElementById("goodsDescription").value;
-      var goodsCategory = document.getElementById("goodsCategory").value;
-      var contactInfo = "Contact: example@example.com"; // Fixed contact information
-
-      // Create a new goods object
-      var goods = {
-        image: goodsImageURL,
-        price: goodsPrice,
-        description: goodsDescription,
-        category: goodsCategory,
-        contact: contactInfo
-      };
-
-      // Add the new goods object to the goods list
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      goodsList.push(goods);
-      localStorage.setItem('goodsList', JSON.stringify(goodsList));
-
-      // Close the modal after submission
-      modal.style.display = "none";
-
-      // Clear the form inputs
-      document.getElementById("postGoodsForm").reset();
-
-      // Reload the goods list
-      loadGoods();
-    };
-
-    // Function to load goods from localStorage and display them
-    function loadGoods(filter = 'all') {
-      var goodsContainer = document.getElementById('goodsContainer');
-      goodsContainer.innerHTML = ''; // Clear the container
-
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      goodsList.forEach(function(goods) {
-        if (filter === 'all' || goods.category === filter) {
-          var goodsItem = document.createElement('div');
-          goodsItem.className = 'goods-item';
-
-          var img = document.createElement('img');
-          img.src = goods.image;
-          goodsItem.appendChild(img);
-
-          var price = document.createElement('p');
-          price.textContent = 'Price: $' + goods.price;
-          goodsItem.appendChild(price);
-
-          var description = document.createElement('p');
-          description.textContent = 'Description: ' + goods.description;
-          goodsItem.appendChild(description);
-
-          var contact = document.createElement('p');
-          contact.textContent = goods.contact;
-          goodsItem.appendChild(contact);
-
-          var editBtn = document.createElement('button');
-          editBtn.className = 'edit-btn';
-          editBtn.textContent = 'Edit';
-          editBtn.onclick = function() {
-            editGoods(goodsList.indexOf(goods));
-          };
-          goodsItem.appendChild(editBtn);
-
-          var deleteBtn = document.createElement('button');
-          deleteBtn.className = 'delete-btn';
-          deleteBtn.textContent = 'Delete';
-          deleteBtn.onclick = function() {
-            deleteGoods(goodsList.indexOf(goods));
-          };
-          goodsItem.appendChild(deleteBtn);
-
-          goodsContainer.appendChild(goodsItem);
-        }
-      });
-    }
-
-    // Function to filter goods by category
-    function filterGoods(category) {
-      loadGoods(category);
-    }
-
-    // Function to delete goods
-    function deleteGoods(index) {
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      goodsList.splice(index, 1);
-      localStorage.setItem('goodsList', JSON.stringify(goodsList));
-      loadGoods();
-    }
-
-
-        // Add your JavaScript code here
-        document.getElementById("postGoodsForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      var goodsImageURL = document.getElementById("goodsImageURL").value;
-      var goodsPrice = document.getElementById("goodsPrice").value;
-      var goodsDescription = document.getElementById("goodsDescription").value;
-      var goodsCategory = document.getElementById("goodsCategory").value;
-
-      // You can now send the form data to your server using AJAX or any other method
-      // For example, you can use the Fetch API:
-      fetch('/api/post-goods', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          image: goodsImageURL,
-          price: goodsPrice,
-          description: goodsDescription,
-          category: goodsCategory
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Successfully posted goods:', data);
-        // You can display a success message or perform any other action after successful submission
-      })
-      .catch(error => {
-        console.error('Error posting goods:', error);
-        // You can display an error message or perform any other action after an error
-      });
     });
-
-
-    // Function to edit goods
-    function editGoods(index) {
-      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-      var goods = goodsList[index];
-
-      document.getElementById("goodsImageURL").value = goods.image;
-      document.getElementById("goodsPrice").value = goods.price;
-      document.getElementById("goodsDescription").value = goods.description;
-      document.getElementById("goodsCategory").value = goods.category;
-
-      // Remove the old item and open the modal for editing
-      goodsList.splice(index, 1);
-      localStorage.setItem('goodsList', JSON.stringify(goodsList));
-      modal.style.display = "block";
-    }
-
-    // Open the modal when the user clicks the "+" button
-    document.getElementById("openModalBtn").onclick = function() {
-      modal.style.display = "block";
-    }
-
-    // Load the goods list when the page loads
-    window.onload = function() {
-      loadGoods();
-    };
+  }
+  // Function to filter goods by category
+  function filterGoods(category) {
+    loadGoods(category);
+  }
+  // Function to delete goods
+  function deleteGoods(index) {
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    goodsList.splice(index, 1);
+    localStorage.setItem('goodsList', JSON.stringify(goodsList));
+    loadGoods();
+  }
+  // Function to edit goods
+  function editGoods(index) {
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    var goods = goodsList[index];
+    document.getElementById("goodsImageURL").value = goods.image;
+    document.getElementById("goodsPrice").value = goods.price;
+    document.getElementById("goodsDescription").value = goods.description;
+    document.getElementById("goodsCategory").value = goods.category;
+    // Remove the old item and open the modal for editing
+    goodsList.splice(index, 1);
+    localStorage.setItem('goodsList', JSON.stringify(goodsList));
+    modal.style.display = "block";
+  }
+  // Open the modal when the user clicks the "+" button
+  document.getElementById("openModalBtn").onclick = function() {
+    modal.style.display = "block";
+  }
+  // Load the goods list when the page loads
+  window.onload = function() {
+    loadGoods();
+  };
   </script>
 </body>
 </html>
