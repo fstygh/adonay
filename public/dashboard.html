@@ -260,73 +260,34 @@
   </div>
 
   <script>
-
-
-// Function to handle form submission
-document.getElementById("postGoodsForm").onsubmit = function(event) {
-  event.preventDefault();
-
-  var goodsImageURL = document.getElementById("goodsImageURL").value;
-  var goodsPrice = document.getElementById("goodsPrice").value;
-  var goodsDescription = document.getElementById("goodsDescription").value;
-  var goodsCategory = document.getElementById("goodsCategory").value;
-  var contactInfo = "Contact: example@example.com"; // Fixed contact information
-
-  // Create a new goods object
-  var goods = {
-    image: goodsImageURL,
-    price: goodsPrice,
-    description: goodsDescription,
-    category: goodsCategory,
-    contact: contactInfo
-  };
-
-  // Save the new goods object to the backend
-  fetch('/post-goods', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(goods)
-  })
-  .then(response => response.json())
-  .then(data => {
-    // Close the modal after submission
-    modal.style.display = "none";
-
-    // Clear the form inputs
-    document.getElementById("postGoodsForm").reset();
-
-    // Reload the goods list
-    loadGoods();
-  })
-  .catch(error => console.error('Error:', error));
-};
-
-
-    
+    // Get modal element
     var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
+    // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
       modal.style.display = "none";
     }
 
+    // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
       if (event.target == modal) {
         modal.style.display = "none";
       }
     }
 
+    // Handle form submission
     document.getElementById("postGoodsForm").onsubmit = function(event) {
       event.preventDefault();
-
       var goodsImageURL = document.getElementById("goodsImageURL").value;
       var goodsPrice = document.getElementById("goodsPrice").value;
       var goodsDescription = document.getElementById("goodsDescription").value;
       var goodsCategory = document.getElementById("goodsCategory").value;
-      var contactInfo = "Contact: example@example.com"; 
+      var contactInfo = "Contact: example@example.com"; // Fixed contact information
 
+      // Create a new goods object
       var goods = {
         image: goodsImageURL,
         price: goodsPrice,
@@ -335,137 +296,107 @@ document.getElementById("postGoodsForm").onsubmit = function(event) {
         contact: contactInfo
       };
 
-      fetch('/post-goods', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(goods)
-      })
-      .then(response => response.json())
-      .then(data => {
-        modal.style.display = "none";
-        document.getElementById("postGoodsForm").reset();
-        loadGoods();
-      })
-      .catch(error => console.error('Error:', error));
+      // Add the new goods object to the goods list
+      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+      goodsList.push(goods);
+      localStorage.setItem('goodsList', JSON.stringify(goodsList));
+
+      // Close the modal after submission
+      modal.style.display = "none";
+
+      // Clear the form inputs
+      document.getElementById("postGoodsForm").reset();
+
+      // Reload the goods list
+      loadGoods();
     };
 
+    // Function to load goods from localStorage and display them
     function loadGoods(filter = 'all') {
-      fetch('/get-goods')
-        .then(response => response.json())
-        .then(goodsList => {
-          var goodsContainer = document.getElementById('goodsContainer');
-          goodsContainer.innerHTML = '';
+      var goodsContainer = document.getElementById('goodsContainer');
+      goodsContainer.innerHTML = ''; // Clear the container
 
-          goodsList.forEach(goods => {
-            if (filter === 'all' || goods.category === filter) {
-              var goodsItem = document.createElement('div');
-              goodsItem.className = 'goods-item';
+      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+      goodsList.forEach(function(goods) {
+        if (filter === 'all' || goods.category === filter) {
+          var goodsItem = document.createElement('div');
+          goodsItem.className = 'goods-item';
 
-              var img = document.createElement('img');
-              img.src = goods.image;
-              goodsItem.appendChild(img);
+          var img = document.createElement('img');
+          img.src = goods.image;
+          goodsItem.appendChild(img);
 
-              var price = document.createElement('p');
-              price.textContent = 'Price: $' + goods.price;
-              goodsItem.appendChild(price);
+          var price = document.createElement('p');
+          price.textContent = 'Price: $' + goods.price;
+          goodsItem.appendChild(price);
 
-              var description = document.createElement('p');
-              description.textContent = 'Description: ' + goods.description;
-              goodsItem.appendChild(description);
+          var description = document.createElement('p');
+          description.textContent = 'Description: ' + goods.description;
+          goodsItem.appendChild(description);
 
-              var contact = document.createElement('p');
-              contact.textContent = goods.contact;
-              goodsItem.appendChild(contact);
+          var contact = document.createElement('p');
+          contact.textContent = goods.contact;
+          goodsItem.appendChild(contact);
 
-              var editBtn = document.createElement('button');
-              editBtn.className = 'edit-btn';
-              editBtn.textContent = 'Edit';
-              editBtn.onclick = function() {
-                editGoods(goodsList.indexOf(goods));
-              };
-              goodsItem.appendChild(editBtn);
+          var editBtn = document.createElement('button');
+          editBtn.className = 'edit-btn';
+          editBtn.textContent = 'Edit';
+          editBtn.onclick = function() {
+            editGoods(goodsList.indexOf(goods));
+          };
+          goodsItem.appendChild(editBtn);
 
-              var deleteBtn = document.createElement('button');
-              deleteBtn.className = 'delete-btn';
-              deleteBtn.textContent = 'Delete';
-              deleteBtn.onclick = function() {
-                deleteGoods(goodsList.indexOf(goods));
-              };
-              goodsItem.appendChild(deleteBtn);
+          var deleteBtn = document.createElement('button');
+          deleteBtn.className = 'delete-btn';
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.onclick = function() {
+            deleteGoods(goodsList.indexOf(goods));
+          };
+          goodsItem.appendChild(deleteBtn);
 
-              goodsContainer.appendChild(goodsItem);
-            }
-          });
-        });
+          goodsContainer.appendChild(goodsItem);
+        }
+      });
     }
 
+    // Function to filter goods by category
     function filterGoods(category) {
       loadGoods(category);
     }
 
+    // Function to delete goods
     function deleteGoods(index) {
-      fetch('/delete-goods', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ index })
-      })
-      .then(() => {
-        loadGoods();
-      })
-      .catch(error => console.error('Error:', error));
+      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+      goodsList.splice(index, 1);
+      localStorage.setItem('goodsList', JSON.stringify(goodsList));
+      loadGoods();
     }
 
+    // Function to edit goods
     function editGoods(index) {
-      fetch(`/get-goods/${index}`)
-        .then(response => response.json())
-        .then(goods => {
-          document.getElementById("goodsImageURL").value = goods.image;
-          document.getElementById("goodsPrice").value = goods.price;
-          document.getElementById("goodsDescription").value = goods.description;
-          document.getElementById("goodsCategory").value = goods.category;
+      var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+      var goods = goodsList[index];
 
-          modal.style.display = "block";
+      document.getElementById("goodsImageURL").value = goods.image;
+      document.getElementById("goodsPrice").value = goods.price;
+      document.getElementById("goodsDescription").value = goods.description;
+      document.getElementById("goodsCategory").value = goods.category;
 
-          document.getElementById("postGoodsForm").onsubmit = function(event) {
-            event.preventDefault();
-
-            var updatedGoods = {
-              image: document.getElementById("goodsImageURL").value,
-              price: document.getElementById("goodsPrice").value,
-              description: document.getElementById("goodsDescription").value,
-              category: document.getElementById("goodsCategory").value,
-              contact: goods.contact
-            };
-
-            fetch(`/update-goods/${index}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(updatedGoods)
-            })
-            .then(() => {
-              modal.style.display = "none";
-              document.getElementById("postGoodsForm").reset();
-              loadGoods();
-            })
-            .catch(error => console.error('Error:', error));
-          };
-        });
+      // Remove the old item and open the modal for editing
+      goodsList.splice(index, 1);
+      localStorage.setItem('goodsList', JSON.stringify(goodsList));
+      modal.style.display = "block";
     }
 
+    // Open the modal when the user clicks the "+" button
     document.getElementById("openModalBtn").onclick = function() {
       modal.style.display = "block";
     }
 
+    // Load the goods list when the page loads
     window.onload = function() {
       loadGoods();
     };
-    
   </script>
 </body>
 </html>
