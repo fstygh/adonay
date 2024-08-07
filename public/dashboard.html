@@ -372,6 +372,42 @@
       loadGoods();
     }
 
+
+        // Add your JavaScript code here
+        document.getElementById("postGoodsForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      var goodsImageURL = document.getElementById("goodsImageURL").value;
+      var goodsPrice = document.getElementById("goodsPrice").value;
+      var goodsDescription = document.getElementById("goodsDescription").value;
+      var goodsCategory = document.getElementById("goodsCategory").value;
+
+      // You can now send the form data to your server using AJAX or any other method
+      // For example, you can use the Fetch API:
+      fetch('/api/post-goods', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          image: goodsImageURL,
+          price: goodsPrice,
+          description: goodsDescription,
+          category: goodsCategory
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Successfully posted goods:', data);
+        // You can display a success message or perform any other action after successful submission
+      })
+      .catch(error => {
+        console.error('Error posting goods:', error);
+        // You can display an error message or perform any other action after an error
+      });
+    });
+
+
     // Function to edit goods
     function editGoods(index) {
       var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
