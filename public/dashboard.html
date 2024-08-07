@@ -260,6 +260,51 @@
   </div>
 
   <script>
+
+
+// Function to handle form submission
+document.getElementById("postGoodsForm").onsubmit = function(event) {
+  event.preventDefault();
+
+  var goodsImageURL = document.getElementById("goodsImageURL").value;
+  var goodsPrice = document.getElementById("goodsPrice").value;
+  var goodsDescription = document.getElementById("goodsDescription").value;
+  var goodsCategory = document.getElementById("goodsCategory").value;
+  var contactInfo = "Contact: example@example.com"; // Fixed contact information
+
+  // Create a new goods object
+  var goods = {
+    image: goodsImageURL,
+    price: goodsPrice,
+    description: goodsDescription,
+    category: goodsCategory,
+    contact: contactInfo
+  };
+
+  // Save the new goods object to the backend
+  fetch('/post-goods', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(goods)
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Close the modal after submission
+    modal.style.display = "none";
+
+    // Clear the form inputs
+    document.getElementById("postGoodsForm").reset();
+
+    // Reload the goods list
+    loadGoods();
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+
+    
     var modal = document.getElementById("myModal");
     var span = document.getElementsByClassName("close")[0];
 
