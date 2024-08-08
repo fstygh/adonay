@@ -309,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const response = await fetch('https://adonay.vercel.app/api/goodsproduct.js', {
+      const response = await fetch('https://adonay.vercel.app/api/getproduct.js', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -338,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
         goodsContainer.innerHTML = ''; // Clear the container
 
         try {
-            const response = await fetch('https://adonay.vercel.app/goodsproduct.js');
+            const response = await fetch('https://adonay.vercel.app/getproduct.js');
 
             if (response.ok) {
                 const goodsList = await response.json();
