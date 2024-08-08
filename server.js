@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const Good = require('./models/Good');
 
-mongoose.connect('mongodb://localhost/goodsdb', {
+mongoose.connect('mongodb://localhost:27017/goodsdb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Get all goods
-app.get('/api/goods', async (req, res) => {
+app.get('/public/getproduct.js', async (req, res) => {
   try {
     const goods = await Good.find();
     res.json(goods);
@@ -67,7 +67,7 @@ app.delete('/public/getproduct.js/:id', async (req, res) => {
 async function importGoodsFromCompass() {
   try {
     // Connect to MongoDB Compass
-    const compassDb = mongoose.createConnection('mongodb://localhost/mongodb://localhost:27017/goodsdb', {
+    const compassDb = mongoose.createConnection('mongodb://localhost:27017/goodsdb', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
