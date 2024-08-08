@@ -440,6 +440,18 @@ document.addEventListener("DOMContentLoaded", () => {
                         contact: goods.contact
                     };
 
+
+                    async function getProduct(id) {
+  const response = await fetch(`/api/getProduct?id=${id}`);
+  const product = await response.json();
+  return product;
+}
+
+// Usage
+getProduct('1').then((product) => {
+  console.log(product);
+});
+
                     try {
                         const updateResponse = await fetch(`https://adonay.vercel.app/api/goods/${id}`, {
                             method: 'PUT',
