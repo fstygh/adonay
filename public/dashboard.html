@@ -304,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const response = await fetch('https://adonay.vercel.app/api/getproduct.js', {
+      const response = await fetch('https://adonay.vercel.app/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
     goodsContainer.innerHTML = ''; // Clear the container
 
     try {
-      const response = await fetch('https://adonay.vercel.app/getproduct.js');
+      const response = await fetch('https://adonay.vercel.app/api/products');
 
       if (response.ok) {
         const goodsList = await response.json();
@@ -392,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to delete goods
   async function deleteGoods(id) {
     try {
-      const response = await fetch(`https://adonay.vercel.app/getproduct.js/${id}`, {
+      const response = await fetch(`https://adonay.vercel.app/api/products/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to edit goods
   async function editGoods(id) {
     try {
-      const response = await fetch(`https://adonay.vercel.app/getproduct.js/${id}`);
+      const response = await fetch(`https://adonay.vercel.app/api/products/${id}`);
 
       if (response.ok) {
         const goods = await response.json();
@@ -436,7 +436,7 @@ document.addEventListener("DOMContentLoaded", () => {
           };
 
           try {
-            const updateResponse = await fetch(`https://adonay.vercel.app/getproduct.js/${id}`, {
+            const updateResponse = await fetch(`https://adonay.vercel.app/api/products/${id}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json'
@@ -470,20 +470,18 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log('Update index.html with:', goods);
   }
 
-  // Function to update index.html after editing a goods
-  function updateIndexAfterEdit(goods) {
-    console.log('Update index.html with edited goods:', goods);
-  }
-
-  // Function to update index.html after deleting a goods
+  // Function to update the index.html after deleting goods
   function updateIndexAfterDelete(id) {
-    console.log('Update index.html after deleting goods with ID:', id);
+    console.log('Update index.html after deleting ID:', id);
   }
 
-  // Load the goods list when the page loads
-  window.onload = function () {
-    loadGoods();
-  };
+  // Function to update the index.html after editing goods
+  function updateIndexAfterEdit(goods) {
+    console.log('Update index.html after editing:', goods);
+  }
+
+  // Load initial goods when the page loads
+  loadGoods();
 });
   </script>
 </body>
