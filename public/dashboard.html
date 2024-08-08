@@ -261,149 +261,166 @@
 
   <script>
 
-  // Get modal element
-  var modal = document.getElementById("myModal");
-  // Get the <span> element that closes the modal
-  var span = document.getElementsByClassName("close")[0];
-  // When the user clicks on <span> (x), close the modal
-  span.onclick = function() {
-    modal.style.display = "none";
-  }
-  // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
+     document.getElementById("postGoodsForm").onsubmit = function(event) {
+      event.preventDefault();
 
-  }
- 
-  // Handle form submission
-  document.getElementById("postGoodsForm").onsubmit = async function(event) {
-    event.preventDefault();
-    const goodsImageURL = document.getElementById("goodsImageURL").value;
-    const goodsPrice = document.getElementById("goodsPrice").value;
-    const goodsDescription = document.getElementById("goodsDescription").value;
-    const goodsCategory = document.getElementById("goodsCategory").value;
-    const contactInfo = "Contact: example@example.com"; // Fixed contact information
+      var goodsImageURL = document.getElementById("goodsImageURL").value;
+      var goodsPrice = document.getElementById("goodsPrice").value;
+      var goodsDescription = document.getElementById("goodsDescription").value;
+      var goodsCategory = document.getElementById("goodsCategory").value;
+      var contactInfo = "Contact: example@example.com";
 
-    // Create a new goods object
-    const goods = {
-      image: goodsImageURL,
-      price: goodsPrice,
-      description: goodsDescription,
-      category: goodsCategory,
-      contact: contactInfo
-    };
+      var goods = {
+        image: goodsImageURL,
+        price: goodsPrice,
+        description: goodsDescription,
+        category: goodsCategory,
+        contact: contactInfo
+      };
 
-    try {
-      // Send a POST request to the backend API
-      const response = await fetch('https://adonay.vercel.app//api/goods', {
+      fetch('/post-goods', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(goods)
-      });
-
-      if (response.ok) {
-        // Close the modal after submission
+      })
+      .then(response => response.json())
+      .then(data => {
         modal.style.display = "none";
-        // Clear the form inputs
         document.getElementById("postGoodsForm").reset();
-        // Reload the goods list
         loadGoods();
-      } else {
-        console.error('Error:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+      })
+      .catch(error => console.error('Error:', error));
+    };
+
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+      modal.style.display = "none";
     }
-  };
 
-  // ...
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
 
-  // Function to load goods from the backend API
-  async function loadGoods(filter = 'all') {
-    const goodsContainer = document.getElementById('goodsContainer');
-    goodsContainer.innerHTML = ''; // Clear the container
+    function loadGoods(filter = 'all') {
+      fetch('/get-goods')
+        .then(response => response.json())
+        .then(goodsList => {
+          var goodsContainer = document.getElementById('goodsContainer');
+          goodsContainer.innerHTML = '';
 
-    try {
-      // Send a GET request to the backend API
-      const response = await fetch('https://adonay.vercel.app//api/goods');
+          goodsList.forEach(goods => {
+            if (filter === 'all' || goods.category === filter) {
+              var goodsItem = document.createElement('div');
+              goodsItem.className = 'goods-item';
 
-      if (response.ok) {
-        const goodsList = await response.json();
+              var img = document.createElement('img');
+              img.src = goods.image;
+              goodsItem.appendChild(img);
 
-        goodsList.forEach(async function(goods) {
-          if (filter === 'all' || goods.category === filter) {
-            const goodsItem = document.createElement('div');
-            goodsItem.className = 'goods-item';
-            // Add the goods details to the goods item
-            // ...
-            goodsContainer.appendChild(goodsItem);
-          }
+              var price = document.createElement('p');
+              price.textContent = 'Price: $' + goods.price;
+              goodsItem.appendChild(price);
+
+              var description = document.createElement('p');
+              description.textContent = 'Description: ' + goods.description;
+              goodsItem.appendChild(description);
+
+              var contact = document.createElement('p');
+              contact.textContent = goods.contact;
+              goodsItem.appendChild(contact);
+
+              var editBtn = document.createElement('button');
+              editBtn.className = 'edit-btn';
+              editBtn.textContent = 'Edit';
+              editBtn.onclick = function() {
+                editGoods(goodsList.indexOf(goods));
+              };
+              goodsItem.appendChild(editBtn);
+
+              var deleteBtn = document.createElement('button');
+              deleteBtn.className = 'delete-btn';
+              deleteBtn.textContent = 'Delete';
+              deleteBtn.onclick = function() {
+                deleteGoods(goodsList.indexOf(goods));
+              };
+              goodsItem.appendChild(deleteBtn);
+
+              goodsContainer.appendChild(goodsItem);
+            }
+          });
         });
-      } else {
-        console.error('Error:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error:', error);
     }
-  }
 
-  // ...
-
-  // Function to delete goods
-  async function deleteGoods(index) {
-    try {
-      // Send a DELETE request to the backend API
-      const response = await fetch(`https://adonay.vercel.app/api/goods/${index}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        loadGoods();
-      } else {
-        console.error('Error:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+    function filterGoods(category) {
+      loadGoods(category);
     }
-  }
 
-  // Function to edit goods
-  async function editGoods(index) {
-    const goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
-    const goods = goodsList[index];
-    document.getElementById("goodsImageURL").value = goods.image;
-    document.getElementById("goodsPrice").value = goods.price;
-    document.getElementById("goodsDescription").value = goods.description;
-    document.getElementById("goodsCategory").value = goods.category;
-
-    try {
-      // Send a PUT request to the backend API
-      const response = await fetch(`https://adonay.vercel.app//api/goods/${index}`, {
-        method: 'PUT',
+    function deleteGoods(index) {
+      fetch('/delete-goods', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(goods)
-      });
-
-      if (response.ok) {
-        // Remove the old item and open the modal for editing
-        goodsList.splice(index, 1);
-        localStorage.setItem('goodsList', JSON.stringify(goodsList));
-        modal.style.display = "block";
-      } else {
-        console.error('Error:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+        body: JSON.stringify({ index })
+      })
+      .then(() => {
+        loadGoods();
+      })
+      .catch(error => console.error('Error:', error));
     }
-  }
 
+    function editGoods(index) {
+      fetch(`/get-goods/${index}`)
+        .then(response => response.json())
+        .then(goods => {
+          document.getElementById("goodsImageURL").value = goods.image;
+          document.getElementById("goodsPrice").value = goods.price;
+          document.getElementById("goodsDescription").value = goods.description;
+          document.getElementById("goodsCategory").value = goods.category;
 
+          modal.style.display = "block";
+
+          document.getElementById("postGoodsForm").onsubmit = function(event) {
+            event.preventDefault();
+
+            var updatedGoods = {
+              image: document.getElementById("goodsImageURL").value,
+              price: document.getElementById("goodsPrice").value,
+              description: document.getElementById("goodsDescription").value,
+              category: document.getElementById("goodsCategory").value,
+              contact: goods.contact
+            };
+
+            fetch(`/update-goods/${index}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(updatedGoods)
+            })
+            .then(() => {
+              modal.style.display = "none";
+              document.getElementById("postGoodsForm").reset();
+              loadGoods();
+            })
+            .catch(error => console.error('Error:', error));
+          };
+        });
+    }
+
+    document.getElementById("openModalBtn").onclick = function() {
+      modal.style.display = "block";
+    }
+
+    window.onload = function() {
+      loadGoods();
+    };
   </script>
 </body>
 </html>
