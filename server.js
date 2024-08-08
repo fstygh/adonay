@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const Good = require('./models/Good');
 
-mongoose.connect('mongodb://localhost:27017/goodsdb', {
+mongoose.connect('mongodb://localhost/goodsdb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -24,7 +24,7 @@ app.get('/api/goods', async (req, res) => {
 });
 
 // Add a new goods
-app.post('/api/getproduct.js', async (req, res) => {
+app.post('/public/getproduct.js', async (req, res) => {
   const good = new Good({
     image: req.body.image,
     price: req.body.price,
@@ -42,7 +42,7 @@ app.post('/api/getproduct.js', async (req, res) => {
 });
 
 // Update a goods
-app.put('/api/getproduct.js/:id', async (req, res) => {
+app.put('/public/getproduct.js/:id', async (req, res) => {
   try {
     const good = await Good.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!good) return res.status(404).json({ message: 'Goods not found' });
@@ -67,7 +67,7 @@ app.delete('/public/getproduct.js/:id', async (req, res) => {
 async function importGoodsFromCompass() {
   try {
     // Connect to MongoDB Compass
-    const compassDb = mongoose.createConnection('mongodb://localhost:27017/goodsdb', {
+    const compassDb = mongoose.createConnection('mongodb://localhost/mongodb://localhost:27017/goodsdb', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
