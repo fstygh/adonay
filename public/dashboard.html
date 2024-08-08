@@ -175,6 +175,39 @@
         console.error('Error:', error);
       }
     };
+
+    // Function to post goods to the dashboard and database
+async function postGoods(event) {
+  event.preventDefault();
+
+  const goodsImageURL = document.getElementById("goodsImageURL").value;
+  const goodsPrice = document.getElementById("goodsPrice").value;
+  const goodsDescription = document.getElementById("goodsDescription").value;
+  const goodsCategory = document.getElementById("goodsCategory").value;
+  const contactInfo = "Contact: example@example.com"; // Fixed contact information
+
+  // Create a new goods object
+  const goods = {
+    image: goodsImageURL,
+    price: goodsPrice,
+    description: goodsDescription,
+    category: goodsCategory,
+    contact: contactInfo
+  };
+
+  try {
+    // Send a POST request to the backend API
+    const response = await fetch('https://adonay.vercel.app/api/goods', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(goods)
+    });
+
+    if (response.ok) {
+      // Clear the form inputs
+      document.getElementById("postGoodsForm").reset();
     // Function to load goods from the backend API
     async function loadGoods(filter = 'all') {
       const goodsContainer = document.getElementById('goodsContainer');
