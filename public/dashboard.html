@@ -261,6 +261,22 @@
 
   <script>
 
+ document.getElementById("postGoodsForm").onsubmit = function(event) {
+      event.preventDefault();
+
+      var goodsImageURL = document.getElementById("goodsImageURL").value;
+      var goodsPrice = document.getElementById("goodsPrice").value;
+      var goodsDescription = document.getElementById("goodsDescription").value;
+      var goodsCategory = document.getElementById("goodsCategory").value;
+      var contactInfo = "Contact: example@example.com";
+
+      var goods = {
+        image: goodsImageURL,
+        price: goodsPrice,
+        description: goodsDescription,
+        category: goodsCategory,
+        contact: contactInfo
+      };
 
 
   // Get modal element
