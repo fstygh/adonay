@@ -278,6 +278,8 @@
     }
   }
   // Handle form submission
+          document.getElementById("postGoodsForm").onsubmit = async function(event) {
+    event.preventDefault(); // Prevent form submission
   document.getElementById("postGoodsForm").onsubmit = function(event) {
     event.preventDefault();
     var goodsImageURL = document.getElementById("goodsImageURL").value;
@@ -293,8 +295,7 @@
       category: goodsCategory,
       contact: contactInfo
     };
-      document.getElementById("postGoodsForm").onsubmit = async function(event) {
-    event.preventDefault(); // Prevent form submission
+
     // Add the new goods object to the goods list
     var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
     goodsList.push(goods);
