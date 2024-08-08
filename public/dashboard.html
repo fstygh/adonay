@@ -3,73 +3,214 @@
 <head>
   <title>Dashboard</title>
   <style>
-    /* ... existing CSS styles ... */
-
-    /* Add the following styles for the modal */
+    body {
+        font-family: 'Montserrat', sans-serif; /* Updated to match the font used in the product cards */
+        background-color: #414852; /* Updated to match the background color of the product cards */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 20px;
+    }
+    
+    h1 {
+        margin-bottom: 20px;
+        color: #ddd; /* Updated to match the text color from the product cards */
+        font-family: 'Bebas Neue', sans-serif; /* Updated to match the font used in the product cards */
+        font-size: 2.5rem; /* Updated to match the title font size in the product cards */
+    }
+    
+    nav {
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+    
+    nav button {
+        padding: 10px 15px; /* Updated padding to match the product card buttons */
+        border: none;
+        background-color: #fff; /* Updated to match the button color from the product cards */
+        color: #333; /* Updated to match the button text color from the product cards */
+        border-radius: 4px; /* Updated to match the button border radius from the product cards */
+        cursor: pointer;
+        font-weight: bold; /* Updated to match the button text weight from the product cards */
+        font-size: 12px; /* Updated to match the button font size from the product cards */
+        text-transform: uppercase; /* Updated to match the text transform from the product cards */
+        letter-spacing: 1px; /* Added to match the button text styling from the product cards */
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    nav button:hover {
+        background-color: orangered; /* Updated to match the hover color from the product cards */
+        color: #fff; /* Updated to match the hover text color from the product cards */
+    }
+    
+    .filter-buttons {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .filter-buttons button {
+        padding: 10px 15px; /* Updated padding to match the product card buttons */
+        border: none;
+        background-color: #fff; /* Updated to match the button color from the product cards */
+        color: #333; /* Updated to match the button text color from the product cards */
+        border-radius: 4px; /* Updated to match the button border radius from the product cards */
+        cursor: pointer;
+        font-weight: bold; /* Updated to match the button text weight from the product cards */
+        font-size: 12px; /* Updated to match the button font size from the product cards */
+        text-transform: uppercase; /* Updated to match the text transform from the product cards */
+        letter-spacing: 1px; /* Added to match the button text styling from the product cards */
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    .filter-buttons button:hover {
+        background-color: orangered; /* Updated to match the hover color from the product cards */
+        color: #fff; /* Updated to match the hover text color from the product cards */
+    }
+    
+    .goods-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: left;
+        gap: 20px;
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 20px;
+    }
+    
+    .goods-item {
+        position: relative;
+        width: 280px;
+        height: 400px;
+        background: #414852; /* Updated to match the background color of the product cards */
+        border-radius: 15px; /* Updated to match the border radius of the product cards */
+        overflow: hidden;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5); /* Updated to match the box shadow of the product cards */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .goods-item:hover {
+        transform: translateY(-10px); /* Updated to match the hover effect of the product cards */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Updated to match the box shadow of the product cards */
+    }
+    
+    .goods-item img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover; /* Ensure the image covers the area without distortion */
+        transition: transform 0.3s ease; /* Added for zoom effect */
+    }
+    
+    .goods-item:hover img {
+        transform: scale(1.1); /* Added for zoom effect on hover */
+    }
+    
+    .goods-item p {
+        margin: 10px 0;
+        color: #ddd; /* Updated to match the text color of the product cards */
+    }
+    
+    .goods-item .price {
+        font-size: 30px; /* Updated to match the price font size of the product cards */
+        font-weight: bold;
+        color: aqua; /* Updated to match the price color of the product cards */
+    }
+    
+    .goods-item button {
+        margin-top: 10px;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 12px; /* Updated to match the button font size from the product cards */
+        text-transform: uppercase; /* Updated to match the text transform from the product cards */
+        letter-spacing: 1px; /* Added to match the button text styling from the product cards */
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    .goods-item .edit-btn {
+        background-color: #fff; /* Updated to match the button color from the product cards */
+        color: #333; /* Updated to match the button text color from the product cards */
+    }
+    
+    .goods-item .delete-btn {
+        background-color: #FF0000; /* Updated to match the delete button color from the product cards */
+        color: white;
+    }
+    
     .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
     }
-
+    
     .modal-content {
-      background-color: #414852;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 500px;
-      border-radius: 15px;
+        background-color: #414852; /* Updated to match the modal background color from the product cards */
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 15px; /* Updated to match the border radius of the product cards */
     }
-
+    
     .close {
-      color: #ddd;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
+        color: #ddd; /* Updated to match the close button color from the product cards */
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
     }
-
+    
     .close:hover,
     .close:focus {
-      color: #fff;
-      text-decoration: none;
-      cursor: pointer;
+        color: #fff; /* Updated to match the close button hover color from the product cards */
+        text-decoration: none;
+        cursor: pointer;
     }
-
+    
     form label {
-      display: block;
-      margin: 10px 0 5px;
-      color: #ddd;
+        display: block;
+        margin: 10px 0 5px;
+        color: #ddd; /* Updated to match the label color from the product cards */
     }
-
+    
     form input,
     form textarea,
     form select,
     form button {
-      width: 95%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+        width: 95%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
     }
-
+    
     form button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
     }
-
+    
     form button:hover {
-      background-color: #0056b3;
+        background-color: #0056b3;
     }
   </style>
 </head>
@@ -94,7 +235,7 @@
 
       <form id="postGoodsForm">
         <label for="goodsImageURL">Image (URL):</label>
-        <input type="url" id="goodsImageURL" name="goodsImageURL" placeholder="http://example.com/image.jpg" required>
+        <input type="url" id="goodsImageURL" name="goodsImageURL" placeholder="http://example.com/image.jpg"><br><br>
 
         <label for="goodsPrice">Price:</label>
         <input type="number" id="goodsPrice" name="goodsPrice" required>
@@ -119,102 +260,226 @@
   </div>
 
   <script>
-    // Get modal element
-    const modal = document.getElementById("myModal");
-    // Get the <span> element that closes the modal
-    const span = document.getElementsByClassName("close")[0];
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
+
+
+
+  // Get modal element
+  var modal = document.getElementById("myModal");
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
       modal.style.display = "none";
     }
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
+  }
+  // Handle form submission
+  document.getElementById("postGoodsForm").onsubmit = function(event) {
+    event.preventDefault();
+    var goodsImageURL = document.getElementById("goodsImageURL").value;
+    var goodsPrice = document.getElementById("goodsPrice").value;
+    var goodsDescription = document.getElementById("goodsDescription").value;
+    var goodsCategory = document.getElementById("goodsCategory").value;
+    var contactInfo = "Contact: example@example.com"; // Fixed contact information
+    // Create a new goods object
+    var goods = {
+      image: goodsImageURL,
+      price: goodsPrice,
+      description: goodsDescription,
+      category: goodsCategory,
+      contact: contactInfo
+    };
+    // Add the new goods object to the goods list
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    goodsList.push(goods);
+    localStorage.setItem('goodsList', JSON.stringify(goodsList));
+    // Close the modal after submission
+    modal.style.display = "none";
+    // Clear the form inputs
+    document.getElementById("postGoodsForm").reset();
+    // Reload the goods list
+    loadGoods();
+  };
+  // Function to load goods from localStorage and display them
+  function loadGoods(filter = 'all') {
+    var goodsContainer = document.getElementById('goodsContainer');
+    goodsContainer.innerHTML = ''; // Clear the container
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    goodsList.forEach(function(goods) {
+      if (filter === 'all' || goods.category === filter) {
+        var goodsItem = document.createElement('div');
+        goodsItem.className = 'goods-item';
+        // Add the goods details to the goods item
+        // ...
+        goodsContainer.appendChild(goodsItem);
+      }
+    });
+  }
+  // Function to filter goods by category
+  function filterGoods(category) {
+    loadGoods(category);
+  }
+  // Function to delete goods
+  function deleteGoods(index) {
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    goodsList.splice(index, 1);
+    localStorage.setItem('goodsList', JSON.stringify(goodsList));
+    loadGoods();
+  }
+  // Function to edit goods
+  function editGoods(index) {
+    var goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    var goods = goodsList[index];
+    document.getElementById("goodsImageURL").value = goods.image;
+    document.getElementById("goodsPrice").value = goods.price;
+    document.getElementById("goodsDescription").value = goods.description;
+    document.getElementById("goodsCategory").value = goods.category;
+    // Remove the old item and open the modal for editing
+    goodsList.splice(index, 1);
+    localStorage.setItem('goodsList', JSON.stringify(goodsList));
+    modal.style.display = "block";
+  }
+  // Open the modal when the user clicks the "+" button
+  document.getElementById("openModalBtn").onclick = function() {
+    modal.style.display = "block";
+  }
+  // Load the goods list when the page loads
+  window.onload = function() {
+    loadGoods();
+  };
+
+
+  // Handle form submission
+  document.getElementById("postGoodsForm").onsubmit = async function(event) {
+    event.preventDefault();
+    const goodsImageURL = document.getElementById("goodsImageURL").value;
+    const goodsPrice = document.getElementById("goodsPrice").value;
+    const goodsDescription = document.getElementById("goodsDescription").value;
+    const goodsCategory = document.getElementById("goodsCategory").value;
+    const contactInfo = "Contact: example@example.com"; // Fixed contact information
+
+    // Create a new goods object
+    const goods = {
+      image: goodsImageURL,
+      price: goodsPrice,
+      description: goodsDescription,
+      category: goodsCategory,
+      contact: contactInfo
+    };
+
+    try {
+      // Send a POST request to the backend API
+      const response = await fetch('https://adonay.vercel.app//api/goods', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(goods)
+      });
+
+      if (response.ok) {
+        // Close the modal after submission
         modal.style.display = "none";
+        // Clear the form inputs
+        document.getElementById("postGoodsForm").reset();
+        // Reload the goods list
+        loadGoods();
+      } else {
+        console.error('Error:', response.statusText);
       }
+    } catch (error) {
+      console.error('Error:', error);
     }
-    // Handle form submission
-    document.getElementById("postGoodsForm").onsubmit = async function(event) {
-      event.preventDefault();
-      const goodsImageURL = document.getElementById("goodsImageURL").value;
-      const goodsPrice = document.getElementById("goodsPrice").value;
-      const goodsDescription = document.getElementById("goodsDescription").value;
-      const goodsCategory = document.getElementById("goodsCategory").value;
-      const contactInfo = "Contact: example@example.com"; // Fixed contact information
+  };
 
-      // Create a new goods object
-      const goods = {
-        image: goodsImageURL,
-        price: goodsPrice,
-        description: goodsDescription,
-        category: goodsCategory,
-        contact: contactInfo
-      };
+  // ...
 
-      try {
-        // Send a POST request to the backend API
-        const response = await fetch('https://adonay.vercel.app/api/goods', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(goods)
+  // Function to load goods from the backend API
+  async function loadGoods(filter = 'all') {
+    const goodsContainer = document.getElementById('goodsContainer');
+    goodsContainer.innerHTML = ''; // Clear the container
+
+    try {
+      // Send a GET request to the backend API
+      const response = await fetch('https://adonay.vercel.app//api/goods');
+
+      if (response.ok) {
+        const goodsList = await response.json();
+
+        goodsList.forEach(async function(goods) {
+          if (filter === 'all' || goods.category === filter) {
+            const goodsItem = document.createElement('div');
+            goodsItem.className = 'goods-item';
+            // Add the goods details to the goods item
+            // ...
+            goodsContainer.appendChild(goodsItem);
+          }
         });
-
-        if (response.ok) {
-          // Close the modal after submission
-          modal.style.display = "none";
-          // Clear the form inputs
-          document.getElementById("postGoodsForm").reset();
-          // Reload the goods list
-          loadGoods();
-        } else {
-          console.error('Error:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+      } else {
+        console.error('Error:', response.statusText);
       }
-    };
-    // Function to load goods from the backend API
-    async function loadGoods(filter = 'all') {
-      const goodsContainer = document.getElementById('goodsContainer');
-      goodsContainer.innerHTML = ''; // Clear the container
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
-      try {
-        // Send a GET request to the backend API
-        const response = await fetch('https://adonay.vercel.app/api/goods');
+  // ...
 
-        if (response.ok) {
-          const goodsList = await response.json();
+  // Function to delete goods
+  async function deleteGoods(index) {
+    try {
+      // Send a DELETE request to the backend API
+      const response = await fetch(`https://adonay.vercel.app/api/goods/${index}`, {
+        method: 'DELETE'
+      });
 
-          goodsList.forEach(async function(goods) {
-            if (filter === 'all' || goods.category === filter) {
-              const goodsItem = document.createElement('div');
-              goodsItem.className = 'goods-item';
-              // Add the goods details to the goods item
-              // ...
-              goodsContainer.appendChild(goodsItem);
-            }
-          });
-        } else {
-          console.error('Error:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+      if (response.ok) {
+        loadGoods();
+      } else {
+        console.error('Error:', response.statusText);
       }
+    } catch (error) {
+      console.error('Error:', error);
     }
-    // Function to filter goods by category
-    function filterGoods(category) {
-      loadGoods(category);
+  }
+
+  // Function to edit goods
+  async function editGoods(index) {
+    const goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    const goods = goodsList[index];
+    document.getElementById("goodsImageURL").value = goods.image;
+    document.getElementById("goodsPrice").value = goods.price;
+    document.getElementById("goodsDescription").value = goods.description;
+    document.getElementById("goodsCategory").value = goods.category;
+
+    try {
+      // Send a PUT request to the backend API
+      const response = await fetch(`https://adonay.vercel.app//api/goods/${index}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(goods)
+      });
+
+      if (response.ok) {
+        // Remove the old item and open the modal for editing
+        goodsList.splice(index, 1);
+        localStorage.setItem('goodsList', JSON.stringify(goodsList));
+        modal.style.display = "block";
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
-    // Open the modal when the user clicks the "+" button
-    document.getElementById("openModalBtn").onclick = function() {
-      modal.style.display = "block";
-    }
-    // Load the goods list when the page loads
-    window.onload = function() {
-      loadGoods();
-    };
+  }
+
+
   </script>
 </body>
 </html>
