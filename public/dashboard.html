@@ -250,7 +250,7 @@
           <option value="salon">Salon Details</option>
         </select>
 
-        <button type="submit">Post</button>
+        <button type="submit" onclick="postgoods()">Post</button>
       </form>
     </div>
   </div>
@@ -285,52 +285,54 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.style.display = "none";
         }
     };
+    document.addEventListener("DOMContentLoaded", () => {
+  // ...
 
-    // Handle form submission
-    postGoodsForm.onsubmit = async function (event) {
-        event.preventDefault();
+  // Handle form submission
+  const postGoodsForm = document.getElementById("postGoodsForm");
+  postGoodsForm.onsubmit = async function (event) {
+    event.preventDefault();
 
-        console.log('Form submitted');  // Debugging: Check if the form is being submitted
+    // Your form submission logic here
+    const goodsImageURL = document.getElementById("goodsImageURL").value;
+    const goodsPrice = document.getElementById("goodsPrice").value;
+    const goodsDescription = document.getElementById("goodsDescription").value;
+    const goodsCategory = document.getElementById("goodsCategory").value;
+    const contactInfo = "Contact: example@example.com"; // Fixed contact information
 
-        const goodsImageURL = document.getElementById("goodsImageURL").value;
-        const goodsPrice = document.getElementById("goodsPrice").value;
-        const goodsDescription = document.getElementById("goodsDescription").value;
-        const goodsCategory = document.getElementById("goodsCategory").value;
-        const contactInfo = "Contact: example@example.com"; // Fixed contact information
-
-        const goods = {
-            image: goodsImageURL,
-            price: goodsPrice,
-            description: goodsDescription,
-            category: goodsCategory,
-            contact: contactInfo
-        };
-
-        console.log('Goods to be posted:', goods);  // Debugging: Check the data being sent
-
-        try {
-            const response = await fetch('https://adonay.vercel.app/api/goods', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(goods)
-            });
-
-            if (response.ok) {
-                console.log('Goods posted successfully');  // Debugging: Confirm successful post
-                modal.style.display = "none";
-                postGoodsForm.reset();
-                loadGoods();
-                updateIndex(goods);
-            } else {
-                console.error('Error:', response.statusText);  // Debugging: Log response error
-            }
-        } catch (error) {
-            console.error('Error:', error);  // Debugging: Log any other errors
-        }
+    const goods = {
+      image: goodsImageURL,
+      price: goodsPrice,
+      description: goodsDescription,
+      category: goodsCategory,
+      contact: contactInfo
     };
 
+    try {
+      const response = await fetch('https://adonay.vercel.app/api/goods', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(goods)
+      });
+
+      if (response.ok) {
+        console.log('Goods posted successfully');
+        modal.style.display = "none";
+        postGoodsForm.reset();
+        loadGoods();
+        updateIndex(goods);
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  // ...
+});
     // Load goods from the backend API
     async function loadGoods(filter = 'all') {
         goodsContainer.innerHTML = ''; // Clear the container
