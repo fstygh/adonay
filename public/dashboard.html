@@ -290,6 +290,8 @@ document.addEventListener("DOMContentLoaded", () => {
     postGoodsForm.onsubmit = async function (event) {
         event.preventDefault();
 
+        console.log('Form submitted');  // Debugging: Check if the form is being submitted
+
         const goodsImageURL = document.getElementById("goodsImageURL").value;
         const goodsPrice = document.getElementById("goodsPrice").value;
         const goodsDescription = document.getElementById("goodsDescription").value;
@@ -304,6 +306,8 @@ document.addEventListener("DOMContentLoaded", () => {
             contact: contactInfo
         };
 
+        console.log('Goods to be posted:', goods);  // Debugging: Check the data being sent
+
         try {
             const response = await fetch('https://adonay.vercel.app/api/goods', {
                 method: 'POST',
@@ -314,15 +318,16 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (response.ok) {
+                console.log('Goods posted successfully');  // Debugging: Confirm successful post
                 modal.style.display = "none";
                 postGoodsForm.reset();
                 loadGoods();
                 updateIndex(goods);
             } else {
-                console.error('Error:', response.statusText);
+                console.error('Error:', response.statusText);  // Debugging: Log response error
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error:', error);  // Debugging: Log any other errors
         }
     };
 
