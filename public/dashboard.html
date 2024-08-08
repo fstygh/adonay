@@ -3,7 +3,62 @@
 <head>
   <title>Dashboard</title>
   <style>
-    /* ... existing CSS styles ... */
+
+      body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-buttons button {
+      margin: 0 5px;
+    }
+
+    .goods-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .goods-item {
+      width: 200px;
+      height: 300px;
+      margin: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .goods-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .goods-item h2 {
+      margin-top: 10px;
+    }
+
+    .goods-item p {
+      margin: 10px;
+    }
 
     /* Add the following styles for the modal */
     .modal {
