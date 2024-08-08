@@ -260,6 +260,9 @@
   </div>
 
   <script>
+
+
+
   // Get modal element
   var modal = document.getElementById("myModal");
   // Get the <span> element that closes the modal
@@ -348,6 +351,135 @@
   window.onload = function() {
     loadGoods();
   };
+
+
+  // Handle form submission
+  document.getElementById("postGoodsForm").onsubmit = async function(event) {
+    event.preventDefault();
+    const goodsImageURL = document.getElementById("goodsImageURL").value;
+    const goodsPrice = document.getElementById("goodsPrice").value;
+    const goodsDescription = document.getElementById("goodsDescription").value;
+    const goodsCategory = document.getElementById("goodsCategory").value;
+    const contactInfo = "Contact: example@example.com"; // Fixed contact information
+
+    // Create a new goods object
+    const goods = {
+      image: goodsImageURL,
+      price: goodsPrice,
+      description: goodsDescription,
+      category: goodsCategory,
+      contact: contactInfo
+    };
+
+    try {
+      // Send a POST request to the backend API
+      const response = await fetch('https://adonay.vercel.app//api/goods', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(goods)
+      });
+
+      if (response.ok) {
+        // Close the modal after submission
+        modal.style.display = "none";
+        // Clear the form inputs
+        document.getElementById("postGoodsForm").reset();
+        // Reload the goods list
+        loadGoods();
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  // ...
+
+  // Function to load goods from the backend API
+  async function loadGoods(filter = 'all') {
+    const goodsContainer = document.getElementById('goodsContainer');
+    goodsContainer.innerHTML = ''; // Clear the container
+
+    try {
+      // Send a GET request to the backend API
+      const response = await fetch('https://adonay.vercel.app//api/goods');
+
+      if (response.ok) {
+        const goodsList = await response.json();
+
+        goodsList.forEach(async function(goods) {
+          if (filter === 'all' || goods.category === filter) {
+            const goodsItem = document.createElement('div');
+            goodsItem.className = 'goods-item';
+            // Add the goods details to the goods item
+            // ...
+            goodsContainer.appendChild(goodsItem);
+          }
+        });
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // ...
+
+  // Function to delete goods
+  async function deleteGoods(index) {
+    try {
+      // Send a DELETE request to the backend API
+      const response = await fetch(`https://adonay.vercel.app/api/goods/${index}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        loadGoods();
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // Function to edit goods
+  async function editGoods(index) {
+    const goodsList = JSON.parse(localStorage.getItem('goodsList')) || [];
+    const goods = goodsList[index];
+    document.getElementById("goodsImageURL").value = goods.image;
+    document.getElementById("goodsPrice").value = goods.price;
+    document.getElementById("goodsDescription").value = goods.description;
+    document.getElementById("goodsCategory").value = goods.category;
+
+    try {
+      // Send a PUT request to the backend API
+      const response = await fetch(`https://adonay.vercel.app//api/goods/${index}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(goods)
+      });
+
+      if (response.ok) {
+        // Remove the old item and open the modal for editing
+        goodsList.splice(index, 1);
+        localStorage.setItem('goodsList', JSON.stringify(goodsList));
+        modal.style.display = "block";
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+
   </script>
 </body>
 </html>
