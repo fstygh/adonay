@@ -123,7 +123,7 @@ h1 {
             var goodsContainer = document.getElementById('goodsContainer');
             goodsContainer.innerHTML = '';
 
-            fetch('https://adonay.vercel.app/getproduct.js') // Ensure this matches your server URL
+            fetch('https://adonay.vercel.app/api/getproduct.js') // Ensure this matches your server URL
                 .then(response => response.json())
                 .then(data => {
                     var goodsList = data;
@@ -185,7 +185,7 @@ h1 {
         }
 
         function editGoods(id) {
-            fetch(`https://adonay.vercel.app/getproduct.js/${id}`)
+            fetch(`https://adonay.vercel.app/api/getproduct.js/${id}`)
                 .then(response => response.json())
                 .then(goods => {
                     document.getElementById("editGoodsId").value = goods._id;
@@ -217,7 +217,7 @@ h1 {
             formData.append('goodsDescription', goodsDescription);
             formData.append('goodsCategory', goodsCategory);
 
-            fetch(`https://adonay.vercel.app/getproduct.js/${goodsId}`, { // Ensure this matches your server URL
+            fetch(`https://adonay.vercel.app/api/getproduct.js/${goodsId}`, { // Ensure this matches your server URL
                 method: 'PUT',
                 body: formData
             })
