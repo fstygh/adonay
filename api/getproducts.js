@@ -1,23 +1,63 @@
-const products = [
-    {
-      id: '1',
-      name: 'sticker',
-      src: 'https://cdn.shopify.com/s/files/1/0434/0285/4564/products/Sticker-mock.png?v=1623256356',
-      price: '$8.00',
-      quantity: 1,
-    },
-    // Add more products as needed
-  ];
+const fs = require('fs');
+const path = require('path');
 
-  
-  export default async function (req, res) {
-    const { id } = req.query;
-    const product = products.find((p) => p.id === id);
-  
-    if (!product) {
-      res.status(404).json({ error: 'Product not found' });
-      return;
+export default function handler(req, res) {
+  const dataFilePath = path.join(process.cwd(), 'goods.json');
+
+  // Helper function to read data from the JSON file
+  const readData = () => {
+    try {
+      const data = fs.readFileSync(dataFilePath, 'utf8');
+      return JSON.parse(data);
+    } catch (err) {
+      return [];
     }
-  
-    res.status(200).json(product);
+  };
+
+  // Helper function to write data to the JSON file
+  const writeData = (data) => {
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+  };
+
+  switch (req.method) {
+    case 'GET':
+      // Return all products
+      const goods = readData();
+      res.status(200).json(goods);
+      break;
+
+    case 'POST':
+      // Add a new product
+      const newGoods = req.body;
+      const goodsData = readData();
+      goodsData.push(newGoods);
+      writeData(goodsData);
+      res.status(201).json(newGoods);
+      break;
+
+    case 'PUT':
+      // Update an existing product
+      const { id } = req.query;
+      const updatedGoods = req.body;
+      let goodsToUpdate = readData();
+      goodsToUpdate = goodsToUpdate.map((item) =>
+        item.id === id ? { ...item, ...updatedGoods } : item
+      );
+      writeData(goodsToUpdate);
+      res.status(200).json(updatedGoods);
+      break;
+
+    case 'DELETE':
+      // Delete a product
+      const { id: deleteId } = req.query;
+      let goodsToDelete = readData();
+      goodsToDelete = goodsToDelete.filter((item) => item.id !== deleteId);
+      writeData(goodsToDelete);
+      res.status(204).end();
+      break;
+
+    default:
+      res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+}
