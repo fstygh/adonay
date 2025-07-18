@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "express": "^4.19.2",
-    "express-session": "^1.18.0",
-    "multer": "^1.4.4"
+    "express-session": "^1.18.2",
+    "multer": "^2.0.2"
   },
   "author": "",
   "license": "ISC"
